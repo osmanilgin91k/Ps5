@@ -1,0 +1,26 @@
+name: PS5 Windows 10
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Windows 10 QEMU ve noVNC Kurulumu
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-system-x86 novnc websockify
+          
+          # Hızlı açılan hazır Tiny Windows 10 / Lite İmajı indir
+          wget -O win10.qcow2 https://app.vagrantup.com/dockurr/boxes/windows-10/versions/1.0.0/providers/qemu/freedesktop/qcow2
+          
+          # QEMU Arka Planda Başlat
+          qemu-system-x86_64 -m 4G -smp 2 -hda win10.qcow2 -vnc :0 -net nic -net user &
+          
+          # noVNC Başlat
+          websockify --web /usr/share/novnc/ 8080 localhost:5900 &
+          
+          # Dışarıya URL Açmak için Pinggy Kullan
+          ssh -R 80:localhost:8080 a.pinggy.io
+          
