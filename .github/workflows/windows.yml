@@ -9,7 +9,6 @@ jobs:
     steps:
       - name: Dockurr Windows 10 ve noVNC Baslat
         run: |
-          # Dockurr Windows 10 Konteynerini Baslat (Port 8006 noVNC/Web Arayuzudur)
           docker run -d --name windows \
             -p 8006:8006 \
             --device=/dev/kvm \
@@ -20,9 +19,7 @@ jobs:
             --stop-timeout 120 \
             dockurr/windows
 
-          # Sisteminin Baslamasi Icin Bekle
           sleep 10
 
-          # Pinggy SSH Tüneli Ile Web Portunu Dışarı Aç
           ssh -o StrictHostKeyChecking=no -R 80:localhost:8006 a.pinggy.io
           
